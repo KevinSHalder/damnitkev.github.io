@@ -1,262 +1,160 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Goofy Puzzle Letter</title>
-<style>
-  body {
-    margin:0;
-    height:100vh;
-    background:linear-gradient(180deg, #fff7d1, #ffe0f2);
-    overflow:hidden;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    position:relative;
-    cursor:default;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kevin S Halder</title>
+    <meta name="description" content="Marketing and Sales Executive in IT industry with interests in music, literature, technology, and history" />
+    <meta name="author" content="Kevin S Halder" />
 
-  /* Cover screen */
-  #cover {
-    position:fixed;
-    inset:0;
-    background:linear-gradient(135deg,#ffb347,#ffcc33,#ff6699);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    z-index:1000;
-    color:#fff;
-    font-size:36px;
-    text-align:center;
-  }
-  #cover button {
-    margin-top:20px;
-    padding:12px 24px;
-    font-size:20px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#fff;
-    color:#ff3e6e;
-    box-shadow:3px 3px #ff4974;
-  }
-  #cover button:hover { transform:scale(1.1); }
+    <meta property="og:title" content="Kevin S Halder" />
+    <meta property="og:description" content="Marketing and Sales Executive in IT industry with interests in music, literature, technology, and history" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-  .sun {
-    position:absolute;
-    top:20px; left:50%;
-    transform:translateX(-50%);
-    font-size:100px;
-    animation:spin 15s linear infinite;
-    z-index:2;
-    cursor:pointer;
-  }
-  @keyframes spin { to{ transform:translateX(-50%) rotate(360deg);} }
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-  .bee {
-    position:absolute;
-    font-size:34px;
-    animation:fly 12s linear infinite;
-    cursor:pointer;
-    z-index:5;
-  }
-  @keyframes fly {
-    0% { top:10%; left:0%; transform:rotate(0);}
-    25%{ top:20%; left:80%; transform:rotate(20deg);}
-    50%{ top:50%; left:50%; transform:rotate(-20deg);}
-    75%{ top:70%; left:10%; transform:rotate(10deg);}
-    100%{ top:10%; left:0%; transform:rotate(0);}
-  }
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; padding: 0; border: 0; }
 
-  .flower {
-    position:absolute;
-    font-size:40px;
-    bottom:0;
-    animation:flowerDance 6s infinite ease-in-out;
-    cursor:pointer;
-    z-index:2;
-  }
-  @keyframes flowerDance {
-    0%,100% { transform:translateY(0) rotate(0);}
-    50% { transform:translateY(-15px) rotate(20deg);}
-  }
-
-  .heart {
-    position:absolute;
-    color:#ff3e6e;
-    font-size:24px;
-    animation:floatUp 8s ease-in forwards;
-    z-index:1;
-  }
-  @keyframes floatUp {
-    0% { transform:translateY(0) scale(1); opacity:1;}
-    100% { transform:translateY(-120vh) scale(0.6); opacity:0;}
-  }
-
-  /* Letter chunks */
-  .chunk {
-    position:absolute;
-    background:#fff;
-    border:2px dashed #ffcc00;
-    padding:8px 12px;
-    border-radius:10px;
-    max-width:200px;
-    font-size:14px;
-    color:#333;
-    z-index:3;
-    box-shadow:3px 3px #ff4974;
-    cursor:grab;
-    user-select:none;
-  }
-  .chunk:active { cursor:grabbing; }
-
-  /* Flash overlay */
-  #flash {
-    position:fixed;
-    inset:0;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:40px;
-    font-weight:bold;
-    color:#000;
-    z-index:2000;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 0.3s;
-  }
-  #flash.show {
-    opacity:1;
-    pointer-events:auto;
-  }
-</style>
-</head>
-<body>
-
-<div id="cover">
-  <div>💌 Solve the Puzzle 💌</div>
-  <button id="startBtn">Start</button>
-</div>
-
-<div class="sun" id="sun">☀️</div>
-<div class="bee">🐝</div>
-
-<!-- Flowers meadow -->
-<div class="flower" style="left:5%;">🌻</div>
-<div class="flower" style="left:15%;">🌼</div>
-<div class="flower" style="left:25%;">🌸</div>
-<div class="flower" style="left:40%;">🌷</div>
-<div class="flower" style="left:55%;">🌻</div>
-<div class="flower" style="left:70%;">🌼</div>
-<div class="flower" style="left:85%;">🌸</div>
-
-<div id="flash"></div>
-
-<script>
-const letter = `Dear Ms. Ramisa Rubama Shahriar,
-
-Before you start reading this, please play this song for full effect that is going to cause in your heart.
-
-I can hardly believe I am writing to the girl of my dreams. I wanted to tell you so much on Saturday but I knew you could not be there, and it is okay. Even now, sitting here and putting my thoughts into words, I feel a warmth in my heart that I cannot fully describe.
-
-Having you in my life feels like discovering a part of myself I never knew existed. Even when I was not ready, even with all the uncertainties and challenges around me, being with you makes me feel like I can face anything. Your presence brings me a sense of peace and joy that I never imagined possible. Every smile, every word, every little thing you do makes my world brighter, and I am endlessly grateful for you.
-
-I love you with all my heart, more deeply than I have ever loved anyone. You are not just my friend, you are my confidante, my safe place, my inspiration, and my best friend. I feel so lucky to have someone who sees me, understands me, and accepts me completely. You make me feel like I am home, like I belong, and I want nothing more than to be that for you as well.
-
-One day, I would love to call you my wife, but for now I am content to cherish every moment we share together. I wish I could give you the same happiness, the same warmth, and the same love that you give me every day a thousand times over. I want to laugh with you, dream with you, and hold you through every storm and every quiet night.
-
-These six months with you have been some of the most beautiful months of my life. Every memory we have created, every conversation, every smile, every gentle touch, I hold close to my heart. And as much as I cherish the past, I am even more excited for our future, for all the infinite moments I hope we will share together.
-
-Thank you for being you, for choosing to be in my life, and for making me feel seen, loved, and safe. You are my dream, my heart, and my forever. Happy six months, my love, and here is to countless more filled with laughter, warmth, and endless love.
-
-From the Dooriyan that tried to keep us apart, to the Ghoomey nights that brought us closer, from Phir Le Aya Dil moments to the Tu Aisa Kaise Hein magic, I shall love you with my whole heart, now and always.
-
-Yours truly,
-Kevin ❤`;
-
-const chunks = letter.split(/\n\n/);
-
-function createChunks(){
-  chunks.forEach((chunk,i)=>{
-    const div=document.createElement("div");
-    div.className="chunk";
-    div.textContent=chunk.trim();
-    div.style.top=(20+Math.random()*60)+"vh";
-    div.style.left=(10+Math.random()*70)+"vw";
-    document.body.appendChild(div);
-
-    // Dragging
-    let offsetX,offsetY;
-    div.addEventListener("mousedown", e=>{
-      offsetX=e.offsetX;
-      offsetY=e.offsetY;
-      function move(ev){
-        div.style.top=(ev.clientY-offsetY)+"px";
-        div.style.left=(ev.clientX-offsetX)+"px";
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 8%;
+        --muted-foreground: 0 0% 46%;
+        --accent: 218 100% 50%;
+        --text-body: 15px;
+        --line-height-tight: 1.3;
+        --space-sm: 0.5rem;
+        --space-md: 0.75rem;
+        --space-lg: 1rem;
+        --space-xl: 1.5rem;
       }
-      function up(){
-        window.removeEventListener("mousemove",move);
-        window.removeEventListener("mouseup",up);
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: 0 0% 8%;
+          --foreground: 0 0% 92%;
+          --muted-foreground: 0 0% 65%;
+          --accent: 218 100% 60%;
+        }
       }
-      window.addEventListener("mousemove",move);
-      window.addEventListener("mouseup",up);
-    });
-  });
-}
 
-// hearts spawner
-function createHeart(){
-  const h=document.createElement("div");
-  h.className="heart";
-  h.textContent="❤️";
-  h.style.left=Math.random()*100+"vw";
-  h.style.bottom="0";
-  h.style.fontSize=(20+Math.random()*30)+"px";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),8000);
-}
-setInterval(createHeart,2500);
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: var(--text-body);
+        line-height: var(--line-height-tight);
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        min-height: 100vh;
+        padding: 2rem 1rem;
+      }
 
-// doodles on click
-const doodles=["🌻","🌸","🌼","🌷","🐝","⭐","💛","💖"];
-document.body.addEventListener("click",(e)=>{
-  if(e.target.id==="startBtn"||e.target.id==="sun"||e.target.classList.contains("flower")) return;
-  const d=document.createElement("div");
-  d.style.position="absolute";
-  d.style.left=(e.pageX-10)+"px";
-  d.style.top=(e.pageY-10)+"px";
-  d.style.fontSize=(20+Math.random()*40)+"px";
-  d.textContent=doodles[Math.floor(Math.random()*doodles.length)];
-  document.body.appendChild(d);
-  setTimeout(()=>d.remove(),3000);
-});
+      @media (min-width: 768px) {
+        body { padding: 3rem 2rem; }
+      }
 
-// Flash screen
-const flash=document.getElementById("flash");
-function showFlash(text){
-  flash.textContent=text;
-  flash.classList.add("show");
-  setTimeout(()=>flash.classList.remove("show"),2000);
-}
+      .container { max-width: 42rem; margin: 0 auto; }
+      .prose { max-width: 65ch; line-height: var(--line-height-tight); }
+      .prose p { margin-bottom: var(--space-sm); }
+      .prose p:last-child { margin-bottom: 0; }
 
-// Sun click
-document.getElementById("sun").addEventListener("click",()=>{
-  showFlash("Areh, my world, gettit? Because you are my sunshine");
-});
+      .space-y-3 > * + * { margin-top: 0.75rem; }
+      .space-y-2 > * + * { margin-top: 0.5rem; }
+      .mt-6 { margin-top: var(--space-xl); }
+      .pt-4 { padding-top: 1rem; }
+      .mb-3 { margin-bottom: 0.75rem; }
+      .mt-4 { margin-top: 1rem; }
+      .mt-2 { margin-top: 0.5rem; }
+      .pl-4 { padding-left: 1rem; }
+      .text-center { text-align: center; }
 
-// Flower click
-document.querySelectorAll(".flower").forEach(f=>{
-  f.addEventListener("click",()=>{
-    showFlash("😏 stop touching yourself");
-  });
-});
+      h1, h2, h3 {
+        font-family: 'Times New Roman', Times, serif;
+        font-weight: normal;
+        line-height: 1.2;
+      }
 
-// Start button
-document.getElementById("startBtn").addEventListener("click",()=>{
-  document.getElementById("cover").style.display="none";
-  createChunks();
-});
-</script>
-</body>
+      h2 { font-size: 1.25rem; color: hsl(var(--foreground)); }
+      a { color: hsl(var(--accent)); text-decoration: underline; transition: opacity 0.2s ease; }
+      a:hover { opacity: 0.7; }
+      strong { font-weight: bold; }
+
+      blockquote {
+        border-left: 2px solid hsl(var(--accent));
+        font-style: italic;
+        color: hsl(var(--muted-foreground));
+      }
+      cite { display: block; font-style: normal; font-size: 0.875rem; }
+      .not-italic { font-style: normal; }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <main class="prose">
+        <div class="space-y-3">
+          <p style="font-weight: bold; text-decoration: underline;">
+            Kevin S Halder
+          </p>
+
+          <p>
+            Hi, I’m Kevin, though people often call me Kev, Kavin, and a bunch of other variations. Usually, I go by Kev, but every now and then I’ve been called Halder Shaheb aswell. Anyway, I work as a Marketing and Sales Executive in the IT industry, right at the time when the world is moving rapidly towards AI. Outside of work, I have a deep fascination for music, literature, technology, and history.
+          </p>
+
+          <p>
+            Even though my current role is in IT sales, I’ve always had a strong pull towards the humanitarian sector. That side of me comes mainly from my family, especially my dad’s influence. One sentence I often repeat is: <em>“God put me in this world to help people.”</em> Disaster management is the big goal I’m working towards (at least for now).
+          </p>
+
+          <p>
+            Here’s my 
+            <a href="https://www.instagram.com/damnitkev/" target="_blank" rel="noopener noreferrer">Instagram</a> 
+            &
+            <a href="mailto:kevinhalder556@gmail.com">Email</a> 
+            (if you’d like to get in touch).
+          </p>
+
+          <p>
+            Other than that, I’m a bit of a bookworm (though not a hardcore one). People can say what they like, but Harry Potter will always feel like the greatest fan fiction to me. And yes, I do have a wonderful girlfriend; hardly a secret, but unless you follow me, she stays behind the curtain. <strong>SHHH...</strong>
+          </p>
+
+          <p>
+            Fitness is another big part of my life. Goal of the year: <strong>Get lean-ish before Christmas.</strong>
+          </p>
+
+          <!-- Recommendations -->
+          <div class="mt-6 pt-4">
+            <h1 class="mb-3">A few recommendations from me:</h1>
+            
+            <div class="space-y-2">
+              <p><strong>Book to read:</strong> <a href="https://notesbythalia.com/the-mountain-is-you-by-brianna-wiest-book-review/" target="_blank" rel="noopener noreferrer">The Mountain Is You | Brianna Wiest</a></p>
+              <p><strong>Album to listen to:</strong> <a href="https://open.spotify.com/album/0bCAjiUamIFqKJsekOYuRw" target="_blank" rel="noopener noreferrer">Wish You Were Here | Pink Floyd</a></p>
+              <p><strong>Video to watch:</strong> <a href="https://youtu.be/DCnm2THZ9lU?si=_rYDRdGeHB0aAwzZ" target="_blank" rel="noopener noreferrer">I used 1950s technology for a week</a></p>
+              <p><strong>Movie to watch:</strong> <a href="https://letterboxd.com/film/whiplash-2014/" target="_blank" rel="noopener noreferrer">Whiplash</a></p>
+            </div>
+          </div>
+
+          <!-- Quote -->
+          <div class="mt-6 pt-4">
+            <p>Here’s a quote I love — and honestly, the reason I even made this page.</p>
+            <blockquote class="mt-4 pl-4">
+              Time isn’t rigid. Rest until you feel guilty… then rest a little more. Sunscreen always works. Stretch. Electrolytes are essential when fasting. Pain ≠ great art. Great art = repetition. Be kind. Be observant. ~ Moosa
+            </blockquote>
+          </div>
+
+          <div class="mt-6 pt-4">
+            <p>
+              That’s all for now; I’ll keep adding more as time goes on. And if you’re curious to hear me ramble about the wild yet dreamlike girl I’m with, catch me on Instagram.
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 text-center">
+            <span>⋆⋆⋆</span>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
 </html>
